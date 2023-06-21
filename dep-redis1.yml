@@ -19,6 +19,14 @@ spec:
       - name: redis-pod1
         image: redis:7.0.11-alpine3.18
         imagePullPolicy: Always
+        volumeMounts:
+        - name: local-config
+          mountPath: /data/redis.conf
+          subPath: redis.conf
+      volumes:
+      - name: local-config
+        configMap:
+          name: redis-config
         resources:
           requests:
             cpu: "1000m"
