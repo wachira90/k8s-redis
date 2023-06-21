@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-redis-master
+  namespace: redis
+  labels:
+    app: redis-pod-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-pod-master
+  template:
+    metadata:
+      labels:
+        app: redis-pod-master
+    spec:
+      containers:
+      - name: redis-pod-master
+        image: redis:7.0.11-alpine3.18
+        ports:
+        - containerPort: 6379
+          command:
+          - "bash"
+        args: ["redis-cli","--cluster","create","svc-redis1:6379","svc-redis2:6379","svc-redis3:6379","--cluster-replicas","1"]
+        securityContext:
+          privileged: false
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-redis-master
+  namespace: redis
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-pod-master
+  ports:
+    - port: 6379
+      targetPort: 6379
