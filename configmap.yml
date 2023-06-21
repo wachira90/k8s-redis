@@ -4,7 +4,7 @@ metadata:
   name: redis-config
   namespace: redis
 data:
-  index.html: |-
+  redis.conf: |-
     port 6379
     cluster-enabled yes
     cluster-config-file nodes.conf
